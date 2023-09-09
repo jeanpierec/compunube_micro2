@@ -1,0 +1,76 @@
+-- PUNTO 1
+kubectl get nodes
+
+nano deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubermatic-dl-deployment
+spec:
+  selector:
+    matchLabels:
+      app: kubermatic-dl
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: kubermatic-dl
+    spec:
+     containers:
+     - name: kubermatic-dl
+       image: jeanpierec/clasificador:latest
+       imagePullPolicy: Always
+       ports:
+       - containerPort: 8080
+
+kubectl apply -f deployment.yaml
+
+kubectl expose deployment kubermatic-dl-deployment  --type=LoadBalancer --port 80 --target-port 5000
+
+kubectl get service
+
+cd Downloads
+curl -X POST -F img=@horse.jpg http://20.246.228.35/predict
+
+
+kubectl delete service kubermatic-dl-deployment
+
+
+
+--PUNTO 2
+
+kubectl get nodes
+
+nano deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubermatic-dl-deployment
+spec:
+  selector:
+    matchLabels:
+      app: kubermatic-dl
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: kubermatic-dl
+    spec:
+     containers:
+     - name: kubermatic-dl
+       image: jeanpierec/calculadora-flask:latest
+       imagePullPolicy: Always
+       ports:
+       - containerPort: 8080
+
+kubectl apply -f deployment.yaml
+
+kubectl expose deployment kubermatic-dl-deployment  --type=LoadBalancer --port 80 --target-port 5000
+
+kubectl get service
+
+
+curl -X POST -H "Content-Type: application/json" -d "{\"num1\": 200, \"num2\": 3}" http://40.88.235.73/add
+curl -X POST -H "Content-Type: application/json" -d "{\"num1\": 200, \"num2\": 3}" http://40.88.235.73/subtract
